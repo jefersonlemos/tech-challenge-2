@@ -45,3 +45,7 @@
 ```bash
     curl --location 'http://localhost:3000/posts'
 ```
+
+## Documentação da API
+
+http://localhost:3000/api-docs

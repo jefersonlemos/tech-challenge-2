@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const swaggerSetup = require("./swagger");
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 app.use(bodyParser.json());
+swaggerSetup(app);
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,26 +26,134 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.model("Post", postSchema);
 
-// GET /posts - Lista de Posts
+/**
+ * @swagger
+ * /posts:
+ *   get:
+ *     summary: Lista de Posts
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Post'
+ */
 app.get("/posts", async (req, res) => {
   const posts = await Post.find();
   res.json(posts);
 });
 
-// GET /posts/:id - Leitura de Posts
+/**
+ * @swagger
+ * /posts/{id}:
+ *   get:
+ *     summary: Leitura de Post
+ *     tags: [Posts]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID do post
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ */
 app.get("/posts/:id", async (req, res) => {
   const post = await Post.findById(req.params.id);
   res.json(post);
 });
 
-// POST /posts - Criação de Postagens
+/**
+ * @swagger
+ * /posts:
+ *   post:
+ *     summary: Cria um novo post
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - content
+ *               - author
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Título do post
+ *                 example: Dica de Gramática
+ *               content:
+ *                 type: string
+ *                 description: Conteúdo do post
+ *                 example: A crase é um acento grave indicativo de crase.
+ *               author:
+ *                 type: string
+ *                 description: Autor do post
+ *                 example: João da Silva
+ *     responses:
+ *       201:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Post'
+ */
 app.post("/posts", async (req, res) => {
   const newPost = new Post(req.body);
   await newPost.save();
   res.status(201).json(newPost);
 });
 
-// PUT /posts/:id - Edição de Postagens
+/**
+ * @swagger
+ * /posts/{id}:
+ *   put:
+ *     summary: Edição de um Post
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - content
+ *               - author
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Título do post
+ *                 example: Dica de Gramática
+ *               content:
+ *                 type: string
+ *                 description: Conteúdo do post
+ *                 example: A crase é um acento grave indicativo de crase.
+ *               author:
+ *                 type: string
+ *                 description: Autor do post
+ *                 example: João da Silva
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID do post
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ */
 app.put("/posts/:id", async (req, res) => {
   const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -51,7 +161,25 @@ app.put("/posts/:id", async (req, res) => {
   res.json(updatedPost);
 });
 
-// DELETE /posts/:id - Exclusão de Postagens
+/**
+ * @swagger
+ * /posts/{id}:
+ *   delete:
+ *     summary: Deleta um Post
+ *     tags: [Posts]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID do post
+ *     responses:
+ *       204:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ */
 app.delete("/posts/:id", async (req, res) => {
   await Post.findByIdAndDelete(req.params.id);
   res.status(204).send();
@@ -69,3 +197,32 @@ app.get("/posts/search", async (req, res) => {
 app.listen(PORT, () => {
   console.log("Server is running on http://localhost:3000");
 });
+
+/**
+ * @swagger
+ *components:
+ *  schemas:
+ *   Post:
+ *     type: object
+ *     properties:
+ *       _id:
+ *         type: string
+ *         description: ID do post
+ *         example: 67a4d111650febdeb677c4af
+ *       title:
+ *         type: string
+ *         description: Título do post
+ *         example: Dica de Gramática
+ *       content:
+ *         type: string
+ *         description: Conteúdo do post
+ *         example: A crase é um acento grave indicativo de crase.
+ *       author:
+ *         type: string
+ *         description: Autor do post
+ *         example: João da Silva
+ *       __v:
+ *         type: number
+ *         description: Versão do documento
+ *         example: 0
+ */
