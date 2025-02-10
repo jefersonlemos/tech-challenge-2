@@ -10,7 +10,6 @@ export default [
   ...tseslint.configs.recommended,
   {
     rules: {
-      "no-console": "warn", // Aviso ao usar console.log
       "semi": ["error", "always"], // Exigir ponto e vírgula no final das declarações
       "quotes": ["error", "double"], // Exigir aspas duplas para strings
       "indent": ["error", 2], // Indentação de 2 espaços
