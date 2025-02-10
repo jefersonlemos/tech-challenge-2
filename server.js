@@ -1,8 +1,8 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
-const swaggerSetup = require("./swagger");
+import express from "express";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import swaggerSetup from "./swagger";
 
 dotenv.config();
 
