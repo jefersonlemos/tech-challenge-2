@@ -1,5 +1,10 @@
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
 
 // Configurações do Swagger
 const swaggerOptions = {
@@ -12,11 +17,11 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://localhost:${PORT}`,
       },
     ],
   },
-  apis: ["./server.js"], // Caminho para onde estão documentadas suas rotas
+  apis: ["./src/*"], // Caminho para onde estão documentadas suas rotas
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
