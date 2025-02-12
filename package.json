@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "lint": "eslint .",
+    "start": "node src/server.js",
+    "lint": "npx eslint",
     "test": "jest"
   },
   "repository": {
