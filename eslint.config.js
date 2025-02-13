@@ -22,4 +22,7 @@ export default [
       "no-multiple-empty-lines": ["error", { "max": 1 }], // Limitar linhas vazias consecutivas a 1
     },
   },
+  {
+    ignores: ["**/node_modules/**", "**/dist/**"],
+  },
 ];

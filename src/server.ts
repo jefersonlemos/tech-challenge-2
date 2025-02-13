@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI as string);
 
 app.use(bodyParser.json());
 swaggerSetup(app);
@@ -184,7 +184,7 @@ app.delete("/posts/:id", async (req, res) => {
 
 // GET /posts/search - Busca de Posts
 app.get("/posts/search", async (req, res) => {
-  const term = req.query.q;
+  const term = req.query.q as string || ""; // Provide a default value
   const posts = await Post.find({
     $or: [{ title: new RegExp(term, "i") }, { content: new RegExp(term, "i") }],
   });
