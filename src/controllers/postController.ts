@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import post from "../models/Post.js";
+import Post from "../models/Post.js";
 
 class PostController {
 
   static async listarPosts(req: Request, res: Response): Promise<void> {
     try {
-      const listaPosts = await post.find({});
+      const listaPosts = await Post.find({});
       res.status(200).json(listaPosts);
     } catch (erro) {
       if (erro instanceof Error) {
@@ -19,7 +19,7 @@ class PostController {
   static async listarPostPorId(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      const postEncontrado = await post.findById(id);
+      const postEncontrado = await Post.findById(id);
       res.status(200).json(postEncontrado);
     } catch (erro) {
       if (erro instanceof Error) {
@@ -33,7 +33,7 @@ class PostController {
   static async listarPostsPorPalavrasChave(req: Request, res: Response): Promise<void> {
     try {
       const palavrasChave = req.query.q as string || ""; // Provide a default value
-      const posts = await post.find({
+      const posts = await Post.find({
         $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }],
       });
 
@@ -51,7 +51,7 @@ class PostController {
     const novoPost = req.body;
     try {
       const postCompleto = { ...novoPost };
-      const postCriado = await post.create(postCompleto);
+      const postCriado = await Post.create(postCompleto);
       res.status(201).json({ message: "criado com sucesso!", post: postCriado });
     } catch (erro) {
       if (erro instanceof Error) {
@@ -65,7 +65,7 @@ class PostController {
   static async atualizarPost(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      await post.findByIdAndUpdate(id, req.body);
+      await Post.findByIdAndUpdate(id, req.body);
       res.status(200).json({ message: "post atualizado" });
     } catch (erro) {
       if (erro instanceof Error) {
@@ -79,7 +79,7 @@ class PostController {
   static async excluirPost(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      await post.findByIdAndDelete(id);
+      await Post.findByIdAndDelete(id);
       res.status(200).json({ message: "post excluído com sucesso" });
     } catch (erro) {
       if (erro instanceof Error) {
