@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import post from "../models/Post.js";
-import { autor } from "../models/Autor.js";
 
 class PostController {
 
@@ -35,8 +34,9 @@ class PostController {
     try {
       const palavrasChave = req.query.q as string || ""; // Provide a default value
       const posts = await post.find({
-        $or: [{ title: new RegExp(palavrasChave, "i") }, { content: new RegExp(palavrasChave, "i") }],
+        $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }],
       });
+
       res.status(200).json(posts);
     } catch (erro) {
       if (erro instanceof Error) {
@@ -50,12 +50,7 @@ class PostController {
   static async cadastrarPost(req: Request, res: Response): Promise<void> {
     const novoPost = req.body;
     try {
-      const autorEcontrado = await autor.findById(novoPost.autor).lean();
-      if (!autorEcontrado) {
-        res.status(404).json({ message: "Autor não encontrado" });
-        return;
-      }
-      const postCompleto = { ...novoPost, autor: autorEcontrado };
+      const postCompleto = { ...novoPost };
       const postCriado = await post.create(postCompleto);
       res.status(201).json({ message: "criado com sucesso!", post: postCriado });
     } catch (erro) {
