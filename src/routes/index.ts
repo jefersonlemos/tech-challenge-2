@@ -3,7 +3,7 @@ import posts from "./postsRoutes.js";
 
 const routes = (app: Express) => {
   app.route("/").get((_, res: Response) => {
-    res.status(200).send({titulo: "Blog da Turma"});
+    res.status(200).send({titulo: "Blog Escola Pública"});
   });
 
   app.use(express.json(), posts);

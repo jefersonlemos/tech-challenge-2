@@ -11,6 +11,6 @@ const postSchema = new mongoose.Schema(
   { versionKey: false },
 );
 
-const post = mongoose.model("posts", postSchema);
+const Post = mongoose.model("Post", postSchema);
 
-export default post;
+export default Post;
