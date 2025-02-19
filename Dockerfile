@@ -1,1 +1,1 @@
-docker instructions to build the image
+docker infrastructure to local development
