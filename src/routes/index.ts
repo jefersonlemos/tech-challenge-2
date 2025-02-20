@@ -1,5 +1,5 @@
 import express, { Express, Response } from "express";
-import posts from "./postsRoutes.js";
+import posts from "./postsRoutes";
 
 const routes = (app: Express) => {
   app.route("/").get((_, res: Response) => {

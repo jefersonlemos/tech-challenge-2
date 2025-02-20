@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Post from "../models/Post.js";
+import Post from "../models/Post";
 
 class PostController {
 
@@ -66,7 +66,7 @@ class PostController {
     try {
       const id = req.params.id;
       await Post.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "post atualizado" });
+      res.status(204).json({ message: "post atualizado" });
     } catch (erro) {
       if (erro instanceof Error) {
         res.status(500).json({ message: `${erro.message} - falha na atualização` });

@@ -6,7 +6,8 @@ const postSchema = new mongoose.Schema(
     titulo: { type: String, required: true },
     conteudo: { type: String },
     autor: { type: String },
-    data: { trim: true, type: Date, default: Date.now },
+    criado_em: { trim: true, type: Date, default: Date.now },
+    atualizado_em: { trim: true, type: Date, default: Date.now },
   },
   { versionKey: false },
 );

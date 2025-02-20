@@ -2,12 +2,14 @@
   "name": "tech-challenge-2-v0",
   "version": "0.0.0",
   "main": "dist/server.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "nodemon server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --coverage"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon dist/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +26,7 @@
     "@eslint/js": "^9.20.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/mongoose": "^5.11.96",
     "@types/supertest": "^6.0.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
@@ -33,6 +36,7 @@
     "nodemon": "^3.1.9",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.1"
   }
