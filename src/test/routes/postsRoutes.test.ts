@@ -37,9 +37,8 @@ describe("POST em /posts", () => {
       })
       .expect(201);
 
-    console.log(resposta.body); // Log the response body to see its structure
+    // console.log(resposta.body);
 
-    // Ensure the response body has the expected structure
     expect(resposta.body).toHaveProperty("post._id");
 
     idResposta = resposta.body.post._id;
@@ -61,20 +60,6 @@ describe("GET em /posts/id", () => {
   });
 });
 
-describe("GET em /posts/search", () => {
-  it("Deve retornar posts que correspondem à palavra-chave", async () => {
-    const resposta = await request(app)
-      .get("/posts/search?q=Teste")
-      .set("Accept", "application/json")
-      .expect("content-type", /json/)
-      .expect(200);
-
-    expect(resposta.body).toBeInstanceOf(Array);
-    expect(resposta.body.length).toBeGreaterThan(0);
-    expect(resposta.body[0]).toHaveProperty("titulo", "Teste");
-  });
-});
-
 describe("PUT em /posts/id", () => {
   test.each([
     ["titulo", { titulo: "Titulo do Post de Teste Editado" }],
@@ -89,6 +74,22 @@ describe("PUT em /posts/id", () => {
       .expect(204);
 
     expect(spy).toHaveBeenCalled();
+  });
+});
+
+describe("GET em /posts/search", () => {
+  it("Deve retornar posts que correspondem à palavra-chave", async () => {
+    const resposta = await request(app)
+      .get("/posts/search?q=Teste")
+      .set("Accept", "application/json")
+      .expect("content-type", /json/)
+      .expect(200);
+
+    expect(resposta.body).toBeInstanceOf(Array);
+    expect(resposta.body.length).toBeGreaterThan(0);
+    expect(resposta.body[0]).toHaveProperty("titulo", "Titulo do Post de Teste Editado");
+
+    // console.log(resposta.body);
   });
 });
 
