@@ -96,7 +96,7 @@ describe("PostController - Testes de falha", () => {
   });
 
   it("Não deve listar um post com ID inválido", async () => {
-    const resposta = await request(app).get("/posts/invalidID").expect(500);
+    const resposta = await request(app).get("/posts/invalidID").expect(404);
     expect(resposta.body.message).toBe("falha na requisição do post");
   });
 

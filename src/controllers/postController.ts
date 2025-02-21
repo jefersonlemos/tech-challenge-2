@@ -21,14 +21,14 @@ class PostController {
       res.status(200).json(postEncontrado);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha na requisição do post" });
+        res.status(404).json({ message: "falha na requisição do post" });
       }
     }
   }
 
   static async listarPostsPorPalavrasChave(req: Request, res: Response): Promise<void> {
     try {
-      const palavrasChave = req.query.q as string || ""; // Provide a default value
+      const palavrasChave = req.params.q as string || req.query.q as string || ""; // Provide a default value
       const posts = await Post.find({
         $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }],
       });
