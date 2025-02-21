@@ -33,7 +33,7 @@ afterEach(async () => {
   await Post.deleteMany({});
 });
 
-describe("PostController", () => {
+describe("PostController - Testes de sucesso", () => {
   it("Deve listar todos os posts", async () => {
     const post = new Post({ titulo: "Post 1", conteudo: "Conteúdo 1", autor: "Autor 1" });
     await post.save();
@@ -86,5 +86,39 @@ describe("PostController", () => {
 
     const resposta = await Post.findById(post._id);
     expect(resposta).toBeNull();
+  });
+});
+
+describe("PostController - Testes de falha", () => {
+  it("Não deve listar posts quando não há posts", async () => {
+    const resposta = await request(app).get("/posts").expect(200);
+    expect(resposta.body.length).toBe(0);
+  });
+
+  it("Não deve listar um post com ID inválido", async () => {
+    const resposta = await request(app).get("/posts/invalidID").expect(500);
+    expect(resposta.body.message).toBe("falha na requisição do post");
+  });
+
+  it("Não deve buscar posts por palavras-chave inexistentes", async () => {
+    const resposta = await request(app).get("/posts/search?keywords=nonexistent").expect(200);
+    expect(resposta.body.length).toBe(0);
+  });
+
+  it("Não deve criar um novo post com dados inválidos", async () => {
+    const novoPost = { titulo: "", conteudo: "", autor: "" };
+    const resposta = await request(app).post("/posts").send(novoPost).expect(500);
+    expect(resposta.body.message).toBe("falha ao cadastrar post");
+  });
+
+  it("Não deve atualizar um post com ID inválido", async () => {
+    const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
+    const resposta = await request(app).put("/posts/invalidID").send(atualizadoPost).expect(500);
+    expect(resposta.body.message).toBe("falha na atualização");
+  });
+
+  it("Não deve excluir um post com ID inválido", async () => {
+    const resposta = await request(app).delete("/posts/invalidID").expect(500);
+    expect(resposta.body.message).toBe("falha na exclusão");
   });
 });

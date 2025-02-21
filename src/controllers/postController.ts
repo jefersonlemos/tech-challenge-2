@@ -9,8 +9,6 @@ class PostController {
       res.status(200).json(listaPosts);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha na requisição` });
-      } else {
         res.status(500).json({ message: "falha na requisição" });
       }
     }
@@ -23,8 +21,6 @@ class PostController {
       res.status(200).json(postEncontrado);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha na requisição do post` });
-      } else {
         res.status(500).json({ message: "falha na requisição do post" });
       }
     }
@@ -40,8 +36,6 @@ class PostController {
       res.status(200).json(posts);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha na busca` });
-      } else {
         res.status(500).json({ message: "falha na busca" });
       }
     }
@@ -55,8 +49,6 @@ class PostController {
       res.status(201).json({ message: "criado com sucesso!", post: postCriado });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha ao cadastrar post` });
-      } else {
         res.status(500).json({ message: "falha ao cadastrar post" });
       }
     }
@@ -69,8 +61,6 @@ class PostController {
       res.status(204).json({ message: "post atualizado" });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha na atualização` });
-      } else {
         res.status(500).json({ message: "falha na atualização" });
       }
     }
@@ -83,8 +73,6 @@ class PostController {
       res.status(200).json({ message: "post excluído com sucesso" });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: `${erro.message} - falha na exclusão` });
-      } else {
         res.status(500).json({ message: "falha na exclusão" });
       }
     }
