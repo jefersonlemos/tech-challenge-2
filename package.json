@@ -7,7 +7,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -47,6 +47,7 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsup": "^8.3.6",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
