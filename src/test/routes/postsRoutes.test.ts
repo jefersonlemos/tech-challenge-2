@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, jest } from "@jest/globals";
 import request from "supertest";
-import app from "../../app";
+import app from "@/app";
 import { Server } from "http";
 
 let server: Server | undefined;

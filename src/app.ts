@@ -1,6 +1,6 @@
 import express from "express";
-import conectaNaDatabase from "./config/dbConnect";
-import routes from "./routes/index";
+import conectaNaDatabase from "@/config/dbConnect";
+import routes from "@/routes/index";
 
 const app = express();
 

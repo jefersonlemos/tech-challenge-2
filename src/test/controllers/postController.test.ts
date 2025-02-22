@@ -3,8 +3,8 @@ import request from "supertest";
 import express from "express";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import PostController from "../../controllers/postController";
-import Post from "../../models/Post";
+import PostController from "@/controllers/postController";
+import Post from "@/models/Post";
 
 const app = express();
 app.use(express.json());

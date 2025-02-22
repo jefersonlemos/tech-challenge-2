@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import Post from "../../models/Post";
+import Post from "@/models/Post";
 
 let mongoServer: MongoMemoryServer;
 

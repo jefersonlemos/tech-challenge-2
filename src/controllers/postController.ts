@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Post from "../models/Post";
+import Post from "@/models/Post";
 
 class PostController {
 
