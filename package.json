@@ -7,7 +7,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",
-    "build": "npx tsup src/server.ts",
+    "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
