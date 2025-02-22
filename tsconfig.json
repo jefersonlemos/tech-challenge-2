@@ -8,10 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "moduleResolution": "node",
-    "baseUrl": "./",
+    // "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },        
+    }
   },
   "include": ["src/**/*"]
 }
