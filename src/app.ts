@@ -1,6 +1,7 @@
 import express from "express";
 import conectaNaDatabase from "@/config/dbConnect";
 import routes from "@/routes/index";
+import swaggerSetup from "./swagger.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ async function startServer() {
     console.log("Conexão com o banco feita com sucesso");
   });
 
+  swaggerSetup(app);
   routes(app);
 }
 
