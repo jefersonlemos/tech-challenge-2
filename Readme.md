@@ -21,7 +21,16 @@
 ```bash
     npm install
 ```
+## Carregando o banco de dados
+```bash
+    docker compose up
+```
 
+## Editando o arquivo .env
+```bash
+    echo -e 'PORT=3000\nMONGODB_URI=mongodb://admin:admin@localhost:27017/' >> .env
+```
+## Iniciando o servidor
 ```bash
     npm run start
 ```
