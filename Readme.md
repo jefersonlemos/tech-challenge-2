@@ -43,9 +43,9 @@
     curl --location 'http://localhost:3000/posts' \
     --header 'Content-Type: application/json' \
     --data '{
-        "author": "José Silva",
-        "title": "Dica de Matemática",
-        "content": "Conteúdo da Dica de Matemática"
+        "autor": "José Silva",
+        "titulo": "Dica de Matemática",
+        "conteudo": "Conteúdo da Dica de Matemática"
     }'
 ```
 
