@@ -21,7 +21,16 @@
 ```bash
     npm install
 ```
+## Carregando o banco de dados
+```bash
+    docker compose up
+```
 
+## Editando o arquivo .env
+```bash
+    echo -e 'PORT=3000\nMONGODB_URI=mongodb://admin:admin@localhost:27017/' >> .env
+```
+## Iniciando o servidor
 ```bash
     npm run start
 ```
@@ -34,9 +43,9 @@
     curl --location 'http://localhost:3000/posts' \
     --header 'Content-Type: application/json' \
     --data '{
-        "author": "José Silva",
-        "title": "Dica de Matemática",
-        "content": "Conteúdo da Dica de Matemática"
+        "autor": "José Silva",
+        "titulo": "Dica de Matemática",
+        "conteudo": "Conteúdo da Dica de Matemática"
     }'
 ```
 

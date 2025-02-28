@@ -24,5 +24,6 @@ export default [
   },
   {
     ignores: ["**/node_modules/**", "**/dist/**"],
+    ignorePatterns: ["node_modules/**"],
   },
 ];

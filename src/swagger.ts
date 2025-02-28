@@ -12,8 +12,8 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Blog Escola Pública",
-      version: "1.0.0",
+      title: "Blog da Turma",
+      version: "0.0.0",
       description: "Documentação da API usando Swagger",
     },
     servers: [
@@ -22,7 +22,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./src/**/*"], // Caminho para onde estão documentadas suas rotas
+  apis: ["./src/routes/api-docs.ts"], // Caminho para onde estão documentadas suas rotas
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
