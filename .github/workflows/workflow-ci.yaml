@@ -11,6 +11,8 @@ on:
     branches-ignore: [ "main"]
   pull_request:
     branches: [ "main"]
+  workflow_dispatch:
+
 
 jobs:
   continuous-integration:
