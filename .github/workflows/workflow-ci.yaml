@@ -41,11 +41,11 @@ jobs:
       continue-on-error: true
       run: npm list        
     - name: Install dependencies
-    - run: npm install
+      run: npm install
     - name: Run tests
-    - run: npm run test
+      run: npm run test
     - name: Build the app
-    - run: npm run build
+      run: npm run build
     #TODO - Needs to store the dist folder to use later, if we use another job
     #TODO - Docker build
     #TODO - Docker Push
