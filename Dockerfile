@@ -1,11 +1,16 @@
-# Usa a imagem oficial do MongoDB
-FROM mongo:latest
+FROM node:22-slim
 
-# Define o diretório de trabalho
-WORKDIR /data/db
+RUN mkdir /app
+WORKDIR /app
 
-# Expondo a porta padrão do MongoDB
-EXPOSE 27017
+# Copy package.json and package-lock.json first
+COPY package*.json ./
+COPY ./dist /app/dist
 
-# Comando padrão ao iniciar o container
-CMD ["mongod"]
+# Copy node_modules from the host machine
+COPY node_modules /app/node_modules
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
+
