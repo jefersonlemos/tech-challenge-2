@@ -1,7 +1,8 @@
-import { CreateAuthorUseCase } from '@/use-cases/create-author'
+// import { CreateAuthorUseCase } from '@/use-cases/create-author'
+import { IAuthor } from './models/author.interface'
 
 // TODO - Tem algo de errado que nao tá certo aqui.
-export class IAuthor implements CreateAuthorUseCase {
+export class Author implements IAuthor {
   id?: number
   cpf: string
   name: string
