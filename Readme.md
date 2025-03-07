@@ -8,32 +8,68 @@
     - Jeferson Lemos dos Santos
     - Victor Hugo Salomão Padrão
 
-## Instalação
+## Execução do app em tempo de desenvolvimento
+Para usar o ambiente localmente é necessário que existam em seu computar, a imagem do banco de dados e da aplicação e as variáveis de ambiente.
+
+Vamos aos passos:
+1. Instalação das dependências
 
 ```bash
-    git clone git@github.com:jefersonlemos/tech-challenge-2.git
-```
+npm install
+``` 
+
+2. Build da aplicação
 
 ```bash
-    cd tech-challenge-2/
+npm run build
 ```
 
+3. Build da imagem
+
 ```bash
-    npm install
-```
-## Carregando o banco de dados
-```bash
-    docker compose up
+docker build -t techchallenge .
 ```
 
-## Editando o arquivo .env
+4. Export das variáveis de ambiente
+
+:warning: Aqui é necessário ajustar os dados de conexao e tomar muito cuidado para nao commitar no repositório.
+
 ```bash
-    echo -e 'PORT=3000\nMONGODB_URI=mongodb://admin:admin@localhost:27017/' >> .env
+export MONGO_INITDB_ROOT_USERNAME=<user>
+export MONGO_INITDB_ROOT_PASSWORD=<pass>
+export MONGO_HOST=<mongodb>
+export MONGO_PORT=27017
+export MONGO_USER=<user>
+export MONGO_PASS=<pass>
 ```
-## Iniciando o servidor
+
+3. Execução local
+
 ```bash
-    npm run start
+docker-compose up -d
 ```
+
+Aplicação acessível via http://localhost:3000
+
+## Executando app fora do container
+
+1. Instalação das dependências
+
+```bash
+npm install
+``` 
+2. Build da aplicação
+
+```bash
+npm run build
+```
+3. Start do servidor
+
+```bash
+npm run start
+```
+
+#TODO - Steps da pipeline e como fazer o deploy
 
 ## Utilização
 
@@ -58,3 +94,13 @@
 ## Documentação da API
 
 http://localhost:3000/api-docs
+
+
+
+
+
+#GitHub Workflow doc page
+- https://docs.github.com/en/actions/writing-workflows
+- https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/caching-dependencies-to-speed-up-workflows#comparing-artifacts-and-dependency-caching
+- https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-nodejs
+- https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#on

@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  app:
+    #TODO - Change the image name to your docker username/image:tag
+    image: techchallenge
+    container_name: app_container
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASS: ${MONGO_PASS}
+      MONGO_DBNAME: ${MONGO_DBNAME}
   mongodb:
     image: mongo:latest
     container_name: mongodb_container
@@ -10,8 +23,9 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      
 
 volumes:
   mongodb_data:
