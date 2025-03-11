@@ -9,7 +9,7 @@ class PostController {
       res.status(200).json(listaPosts);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha na requisição" });
+        res.status(500).json({ message: "Falha na requisição dos posts." });
       }
     }
   }
@@ -18,25 +18,30 @@ class PostController {
     try {
       const id = req.params.id;
       const postEncontrado = await Post.findById(id);
+
+      if (!postEncontrado) {
+        res.status(404).json({ message: "Post não encontrado." });
+      }
+
       res.status(200).json(postEncontrado);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(404).json({ message: "falha na requisição do post" });
+        res.status(404).json({ message: "Falha na requisição do post." });
       }
     }
   }
 
   static async listarPostsPorPalavrasChave(req: Request, res: Response): Promise<void> {
     try {
-      const palavrasChave = req.params.q as string || req.query.q as string || ""; // Provide a default value
+      const palavrasChave = req.params.q as string || req.query.q as string || "";
       const posts = await Post.find({
-        $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }],
+        $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }, { autor: new RegExp(palavrasChave, "i") }],
       });
 
       res.status(200).json(posts);
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha na busca" });
+        res.status(500).json({ message: "Falha na busca." });
       }
     }
   }
@@ -46,10 +51,10 @@ class PostController {
     try {
       const postCompleto = { ...novoPost };
       const postCriado = await Post.create(postCompleto);
-      res.status(201).json({ message: "criado com sucesso!", post: postCriado });
+      res.status(201).json({ message: "Post criado com sucesso!", post: postCriado });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha ao cadastrar post" });
+        res.status(500).json({ message: "Falha ao cadastrar novo post." });
       }
     }
   }
@@ -57,11 +62,11 @@ class PostController {
   static async atualizarPost(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      await Post.findByIdAndUpdate(id, req.body);
-      res.status(204).json({ message: "post atualizado" });
+      const postEditado = await Post.findByIdAndUpdate(id, req.body, { new: true });
+      res.status(200).json({ message: "Post atualizado.", post: postEditado });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha na atualização" });
+        res.status(500).json({ message: "Falha na atualização do post." });
       }
     }
   }
@@ -70,10 +75,10 @@ class PostController {
     try {
       const id = req.params.id;
       await Post.findByIdAndDelete(id);
-      res.status(200).json({ message: "post excluído com sucesso" });
+      res.status(200).json({ message: "Post excluído com sucesso." });
     } catch (erro) {
       if (erro instanceof Error) {
-        res.status(500).json({ message: "falha na exclusão" });
+        res.status(500).json({ message: "Falha na exclusão do post." });
       }
     }
   }

@@ -72,7 +72,7 @@ describe("PostController - Testes de sucesso", () => {
     await post.save();
 
     const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
-    await request(app).put(`/posts/${post._id}`).send(atualizadoPost).expect(204);
+    await request(app).put(`/posts/${post._id}`).send(atualizadoPost).expect(200);
 
     const resposta = await Post.findById(post._id);
     expect(resposta?.titulo).toBe("Post Atualizado");
