@@ -30,6 +30,12 @@
 ```bash
     echo -e 'PORT=3000\nMONGODB_URI=mongodb://admin:admin@localhost:27017/' >> .env
 ```
+
+## Buildando o servidor
+```bash
+    npm run build
+```
+
 ## Iniciando o servidor
 ```bash
     npm run start
