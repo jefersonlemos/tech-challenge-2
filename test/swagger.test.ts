@@ -1,6 +1,6 @@
 import express from "express";
 import request from "supertest";
-import swaggerSetup from "../../src/swagger";
+import swaggerSetup from "../src/swagger";
 
 let app: express.Express;
 
