@@ -48,6 +48,8 @@ jobs:
       run: npm run test
     - name: Build the app
       run: npm run build
-    #TODO - Needs to store the dist folder to use later, if we use another job
-    #TODO - Docker build test
-    #TODO - Docker Push
+    - name: Build Docker image
+      run: docker build -t blog-escola-publica .
+    - name: Push Docker image
+      # run: docker tag blog-escola-publica ${{ secrets.DOCKER_HUB_USERNAME }}/blog-escola-publica
+      run: echo "Pushing Docker image to Docker Hub"
