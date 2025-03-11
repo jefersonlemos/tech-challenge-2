@@ -49,5 +49,5 @@ jobs:
     - name: Build the app
       run: npm run build
     #TODO - Needs to store the dist folder to use later, if we use another job
-    #TODO - Docker build
+    #TODO - Docker build test
     #TODO - Docker Push
