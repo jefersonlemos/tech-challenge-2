@@ -97,7 +97,7 @@ describe("PostController - Testes de falha", () => {
 
   it("Não deve listar um post com ID inválido", async () => {
     const resposta = await request(app).get("/posts/invalidID").expect(404);
-    expect(resposta.body.message).toBe("falha na requisição do post");
+    expect(resposta.body.message).toBe("Falha na requisição do post.");
   });
 
   it("Não deve buscar posts por palavras-chave inexistentes", async () => {
@@ -108,17 +108,17 @@ describe("PostController - Testes de falha", () => {
   it("Não deve criar um novo post com dados inválidos", async () => {
     const novoPost = { titulo: "", conteudo: "", autor: "" };
     const resposta = await request(app).post("/posts").send(novoPost).expect(500);
-    expect(resposta.body.message).toBe("falha ao cadastrar post");
+    expect(resposta.body.message).toBe("Falha ao cadastrar novo post.");
   });
 
   it("Não deve atualizar um post com ID inválido", async () => {
     const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
     const resposta = await request(app).put("/posts/invalidID").send(atualizadoPost).expect(500);
-    expect(resposta.body.message).toBe("falha na atualização");
+    expect(resposta.body.message).toBe("Falha na atualização do post.");
   });
 
   it("Não deve excluir um post com ID inválido", async () => {
     const resposta = await request(app).delete("/posts/invalidID").expect(500);
-    expect(resposta.body.message).toBe("falha na exclusão");
+    expect(resposta.body.message).toBe("Falha na exclusão do post.");
   });
 });
