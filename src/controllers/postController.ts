@@ -21,6 +21,7 @@ class PostController {
 
       if (!postEncontrado) {
         res.status(404).json({ message: "Post não encontrado." });
+        return;
       }
 
       res.status(200).json(postEncontrado);
@@ -63,6 +64,12 @@ class PostController {
     try {
       const id = req.params.id;
       const postEditado = await Post.findByIdAndUpdate(id, req.body, { new: true });
+
+      if (!postEditado) {
+        res.status(404).json({ message: "Post não encontrado." });
+        return;
+      }
+
       res.status(200).json({ message: "Post atualizado.", post: postEditado });
     } catch (erro) {
       if (erro instanceof Error) {
@@ -74,7 +81,14 @@ class PostController {
   static async excluirPost(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
+      const postEncontrado = await Post.findById(id);
+
+      if (!postEncontrado) {
+        res.status(404).json({ message: "Post não encontrado." });
+        return;
+      }
       await Post.findByIdAndDelete(id);
+
       res.status(200).json({ message: "Post excluído com sucesso." });
     } catch (erro) {
       if (erro instanceof Error) {
