@@ -7,7 +7,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",
-    "build": "tsc && tsc-alias",
+    "build": "tsc --outDir dist && tsc-alias",
     "test": "jest --verbose",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
