@@ -96,7 +96,7 @@ describe("PUT em /posts/id", () => {
     await requisicao.request(app)
       .put(`/posts/${idResposta}`)
       .send(param)
-      .expect(204);
+      .expect(200);
 
     expect(spy).toHaveBeenCalled();
   });
