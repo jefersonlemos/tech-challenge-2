@@ -58,5 +58,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        push: ${{ github.ref == 'refs/heads/main' }}
-        tags: jefoso/blog-escola-publica:latest
+        push: true
+        tags: |
+          ${{ github.ref == 'refs/heads/main' && 'jefoso/blog-escola-publica:latest' || '' }}
+          jefoso/blog-escola-publica:${{ github.sha }}
