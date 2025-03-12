@@ -65,6 +65,13 @@ npm run build
 ```
 3. Start do servidor
 
+
+## Buildando o servidor
+```bash
+    npm run build
+```
+
+## Iniciando o servidor
 ```bash
 npm run start
 ```
