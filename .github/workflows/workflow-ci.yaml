@@ -15,7 +15,6 @@ on:
 
 jobs:
   continuous-integration:
-    if: github.event.pull_request.merged == true || github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
