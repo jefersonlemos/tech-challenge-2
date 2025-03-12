@@ -8,11 +8,8 @@ name: Workflow de Continuos Integration - Blog Escola Pública
 #Builds on every push to a branch other than main, main branch builds on every pull request
 on:
   push:
-    branches-ignore: [ "main"]
-  pull_request:
-    types:
-      - closed
-    branches: [ "main"]
+    branches:
+      - '**'
   workflow_dispatch:
 
 
