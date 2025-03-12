@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '22'
-    #Cache to improve pipeline performance    
+    #Cache to improve pipeline performance
     - name: Cache node modules
       id: cache-npm
       uses: actions/cache@v4
@@ -48,8 +48,15 @@ jobs:
       run: npm run test
     - name: Build the app
       run: npm run build
-    - name: Build Docker image
-      run: docker build -t blog-escola-publica .
-    - name: Push Docker image
-      # run: docker tag blog-escola-publica ${{ secrets.DOCKER_HUB_USERNAME }}/blog-escola-publica
-      run: echo "Pushing Docker image to Docker Hub"
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push Docker images
+      id: push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: ${{ github.ref == 'refs/heads/main' }}
+        tags: jefoso/blog-escola-publica:latest
