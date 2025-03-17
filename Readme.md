@@ -65,18 +65,9 @@ npm run build
 ```
 3. Start do servidor
 
-
-## Buildando o servidor
-```bash
-    npm run build
-```
-
-## Iniciando o servidor
 ```bash
 npm run start
 ```
-
-#TODO - Steps da pipeline e como fazer o deploy
 
 ## Utilização
 
@@ -101,13 +92,3 @@ npm run start
 ## Documentação da API
 
 http://localhost:3000/api-docs
-
-
-
-
-
-#GitHub Workflow doc page
-- https://docs.github.com/en/actions/writing-workflows
-- https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/caching-dependencies-to-speed-up-workflows#comparing-artifacts-and-dependency-caching
-- https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-nodejs
-- https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#on
