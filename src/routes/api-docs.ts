@@ -88,7 +88,7 @@
  *        required: true
  *        description: ID do post
  *     responses:
- *       204:
+ *       200:
  *         description: Sucesso
  *         content:
  *           application/json:
