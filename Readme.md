@@ -37,7 +37,7 @@ docker build -t techchallenge .
 ```bash
 export MONGO_INITDB_ROOT_USERNAME=<user>
 export MONGO_INITDB_ROOT_PASSWORD=<pass>
-export MONGO_HOST=<mongodb>
+export MONGO_HOST=mongodb
 export MONGO_PORT=27017
 export MONGO_USER=<user>
 export MONGO_PASS=<pass>
@@ -63,7 +63,21 @@ npm install
 ```bash
 npm run build
 ```
-3. Start do servidor
+
+3. Export das mesmas variáveis de ambiente ou usar o arquivo .env
+
+:warning: Aqui é necessário ajustar os dados de conexao e tomar muito cuidado para nao commitar no repositório.
+
+```bash
+export MONGO_INITDB_ROOT_USERNAME=<user>
+export MONGO_INITDB_ROOT_PASSWORD=<pass>
+export MONGO_HOST=localhost
+export MONGO_PORT=27017
+export MONGO_USER=<user>
+export MONGO_PASS=<pass>
+```
+
+4. Start do servidor
 
 ```bash
 npm run start
