@@ -13,7 +13,6 @@ services:
       MONGO_PORT: ${MONGO_PORT}
       MONGO_USER: ${MONGO_USER}
       MONGO_PASS: ${MONGO_PASS}
-      MONGO_DBNAME: ${MONGO_DBNAME}
   mongodb:
     image: mongo:latest
     container_name: db-blog-escola-publica
