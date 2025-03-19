@@ -94,11 +94,11 @@ npm run build
 docker build -t techchallenge-dev .
 ```
 5.  Ajuste o docker-compose para utilizar a imagem local correta
-```bash    
+```yaml    
 services:
-	app:
-		image: techchallenge-dev
-		container_name: app-blog-escola-publica-dev
+    app:
+	    image: techchallenge-dev
+	    container_name: app-blog-escola-publica-dev
 ```
   
 6.  Configure as variáveis de ambiente
@@ -150,7 +150,7 @@ npm run start
 ## Uso Básico
 
 Criar uma Postagem
-
+```json
 curl --location 'http://localhost:3000/posts' \  
 --header 'Content-Type: application/json' \  
 --data '{  
@@ -158,10 +158,12 @@ curl --location 'http://localhost:3000/posts' \
 "titulo": "Dica de Matemática",  
 "conteudo": "Conteúdo da Dica de Matemática"  
 }'
+```
 
 Listar Postagens
-
+```bash
 curl --location 'http://localhost:3000/posts'
+```
 
 ⚠ ️ AVISO: Quando você configurar a aplicação pela primeira vez, o banco de dados estará vazio. Você precisará criar a primeira postagem usando o endpoint de API descrito acima. O banco de dados MongoDB é configurado através do Docker Compose e manterá os dados entre os reinicios do container.
 
@@ -226,27 +228,27 @@ A pasta src/routes atua como um complemento ao padrão MVC, definindo os endpoin
 
 ## Endpoints
 
-- GET  /posts
-Descrição: Lista todos os posts.
+- /posts
+    - **Método:** GET
+        - **Descrição:** Lista todos os posts.
+    - **Método:** POST
+        - **Descrição:** Cadastra um novo post.
 
-- GET  /posts/search
-Descrição: Lista posts por palavras-chave.
-Parâmetros de Consulta: q (string) - Palavra-chave para busca.
+- /posts/search
+    - **Método:** GET
+    - **Descrição:** Lista posts por palavras-chave.
+    - **Parâmetros de Consulta:** q (string) - Palavra-chave para busca.
 
-- GET  /posts/:id
-Descrição: Lista um post por ID.
-Parâmetros de Rota: id (ObjectId) - ID do post.
-
-- POST /posts
-Descrição: Cadastra um novo post.
-
-- PUT  /posts/:id
-Descrição: Atualiza um post existente.
-Parâmetros de Rota: id (ObjectId) - ID do post.
-
-- DELETE /posts/:id
-Descrição: Exclui um post existente.
-Parâmetros de Rota: id (ObjectId) - ID do post.
+- /posts/:id
+    - **Método:** GET
+        - **Descrição:** Lista um post por ID.
+        - **Parâmetros de Rota:** id (ObjectId) - ID do post.
+    - **Método:** PUT
+        - **Descrição:** Atualiza um post existente.
+        - **Parâmetros de Rota:** id (ObjectId) - ID do post.
+    - **Método:** DELETE
+        - **Descrição:** Exclui um post existente.
+        - **Parâmetros de Rota:** id (ObjectId) - ID do post.
 
 Exemplos detalhados de respostas de sucesso ou falha podem ser encontrados na documentação técnica da API (disponível em: http://localhost:3000/api-docs).
 
@@ -256,18 +258,18 @@ O modelo de dados é definido usando o Mongoose, uma biblioteca de modelagem de 
 
 ## Estrutura do Esquema
 
-- id: Um identificador único para cada post, do tipo ObjectId do MongoDB.
-- titulo: Um campo obrigatório (required: true) que armazena o título do post, do tipo String.
-- conteudo: Um campo opcional que armazena o conteúdo do post, do tipo String.
-- autor: Um campo opcional que armazena o autor do post, do tipo String.
-- timestamps: Adiciona automaticamente os campos createdAt e updatedAt aos documentos, renomeados para criado_em e atualizado_em, respectivamente.
-- versionKey: Desativado (false), o que significa que o campo __v (usado para controle de versão) não será adicionado aos documentos.
+- **id:** Um identificador único para cada post, do tipo ObjectId do MongoDB.
+- **titulo:** Um campo obrigatório (required: true) que armazena o título do post, do tipo String.
+- **conteudo:** Um campo opcional que armazena o conteúdo do post, do tipo String.
+- **autor:** Um campo opcional que armazena o autor do post, do tipo String.
+- **timestamps:** Adiciona automaticamente os campos createdAt e updatedAt aos documentos, renomeados para criado_em e atualizado_em, respectivamente.
+- **versionKey:** Desativado (false), o que significa que o campo __v (usado para controle de versão) não será adicionado aos documentos.
 
 ## Estrutura do Banco de Dados
 
 No MongoDB, a estrutura do banco de dados é flexível e baseada em coleções e documentos. Para este modelo:
 
--   Coleção: Post
+-   **Coleção:** Post
 -   Cada documento na coleção Post representa um post individual.
 -   Os documentos seguem a estrutura definida pelo postSchema.ts.
 
@@ -329,13 +331,10 @@ O projeto utiliza o MongoMemoryServer para criar um banco de dados MongoDB em me
 
 Os testes unitários são escritos usando jest  e supertest  para testar as rotas e controladores do aplicativo. Os testes estão organizados em diferentes arquivos para cobrir várias partes do sistema:
 
-- test/swagger.test.ts: Testa a configuração do Swagger, garantindo que a documentação da API esteja acessível.
-
-- test/routes/postsRoutes.test.ts: Testa as rotas de posts, incluindo operações de CRUD (Create, Read, Update, Delete) e busca por palavras-chave.
-
-- test/models/Post.test.ts: Testa o modelo Post, verificando a criação e validação de documentos.
-
-- test/controllers/postController.test.ts: Testa o controlador PostController, garantindo que as operações de CRUD funcionem corretamente.
+- **test/swagger.test.ts:** Testa a configuração do Swagger, garantindo que a documentação da API esteja acessível.
+- **test/routes/postsRoutes.test.ts:** Testa as rotas de posts, incluindo operações de CRUD (Create, Read, Update, Delete) e busca por palavras-chave.
+- **test/models/Post.test.ts:** Testa o modelo Post, verificando a criação e validação de documentos.
+- **test/controllers/postController.test.ts:** Testa o controlador PostController, garantindo que as operações de CRUD funcionem corretamente.
 
 ## Métricas de Cobertura
 
@@ -343,14 +342,10 @@ Para obter métricas de cobertura, o projeto utiliza o comando npm run test:cove
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc64jxhqpg1EMhB5SvDz6kyQpOCGrb-ukwr8gadtz_bbPFR3PYBPEO_hQxWKho41LLKRyTiB8MXUNMyoWRVRSDAxObQ2oohGvTqJmGs97bSTl0pkvcbkAaH1XHr-Sj5ugQyICojOA?key=7gWURWvUss-0fA0S_OdUQk6_)
 
--   Statements (Declarações): 84.93%. Refere-se ao número de declarações executáveis no código. A cobertura de statements indica a porcentagem dessas declarações que foram executadas durante os testes.
-    
--   Branches (Ramificações): 57.14%. Refere-se aos pontos de decisão no código, como instruções if, switch e operadores ternários. A cobertura de branches indica a porcentagem dessas ramificações que foram testadas, incluindo todas as possíveis condições.
-    
--   Functions (Funções): 88.88%. Refere-se ao número de funções ou métodos definidos no código. A cobertura de functions indica a porcentagem dessas funções que foram chamadas durante os testes.
-    
--   Lines (Linhas): 84.93%. Refere-se ao número de linhas de código executáveis. A cobertura de linhas indica a porcentagem dessas linhas que foram executadas durante os testes.
-    
+-   **Statements (Declarações):** 84.93%. Refere-se ao número de declarações executáveis no código. A cobertura de statements indica a porcentagem dessas declarações que foram executadas durante os testes.  
+-   **Branches (Ramificações):** 57.14%. Refere-se aos pontos de decisão no código, como instruções if, switch e operadores ternários. A cobertura de branches indica a porcentagem dessas ramificações que foram testadas, incluindo todas as possíveis condições.
+-   **Functions (Funções):** 88.88%. Refere-se ao número de funções ou métodos definidos no código. A cobertura de functions indica a porcentagem dessas funções que foram chamadas durante os testes.
+-   **Lines (Linhas):** 84.93%. Refere-se ao número de linhas de código executáveis. A cobertura de linhas indica a porcentagem dessas linhas que foram executadas durante os testes.
 
 Essas métricas indicam uma boa cobertura geral, com áreas específicas que podem ser melhoradas, especialmente em termos de cobertura de branches.
 
@@ -364,4 +359,4 @@ Para superar essas dificuldades, adotamos um planejamento utilizando GitHub Proj
 
 [Notion do Grupo](https://evefalcao.notion.site/Tech-Challenge-Fase-2-18b50daed6e280399345ee765b801614?pvs=4)
 
-Diagrama de Arquitetura?
+# Diagrama de Arquitetura?
