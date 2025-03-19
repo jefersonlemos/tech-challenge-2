@@ -100,8 +100,8 @@ docker build -t techchallenge-dev .
 ```yaml    
 services:
     app:
-	    image: techchallenge-dev
-	    container_name: app-blog-escola-publica-dev
+        image: techchallenge-dev
+        container_name: app-blog-escola-publica-dev
 ```
   
 6.  Configure as variáveis de ambiente
@@ -153,7 +153,7 @@ npm run start
 ## Uso Básico
 
 Criar uma Postagem
-```json
+```bash
 curl --location 'http://localhost:3000/posts' \  
 --header 'Content-Type: application/json' \  
 --data '{  
