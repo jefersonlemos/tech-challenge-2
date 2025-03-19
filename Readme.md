@@ -20,6 +20,7 @@ Integrantes do Grupo 6:
 - [Introdução](#introdução)
 - [Instruções](#instruções)
     - [Pré-requisitos](#pré-requisitos)
+    - [Executando a aplicacao](#executando-a-aplicacao)
     - [Configuração para Desenvolvimento Local](#configuração-para-desenvolvimento-local)
         - [Utilizando o docker-compose](#utilizando-o-docker-compose)
         - [Executando Fora do Container](#executando-fora-do-container)
@@ -69,6 +70,8 @@ O sistema visa criar uma camada de serviços para gerenciar um sistema de blog, 
     
 6.  Variáveis de ambiente
     
+## Executando a aplicacao
+
 
 ## Configuração para Desenvolvimento Local
 
@@ -358,5 +361,3 @@ Para superar essas dificuldades, adotamos um planejamento utilizando GitHub Proj
 # Apêndices
 
 [Notion do Grupo](https://evefalcao.notion.site/Tech-Challenge-Fase-2-18b50daed6e280399345ee765b801614?pvs=4)
-
-# Diagrama de Arquitetura?
