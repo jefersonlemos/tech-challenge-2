@@ -20,6 +20,7 @@ Integrantes do Grupo 6:
 - [Introdução](#introdução)
 - [Instruções](#instruções)
     - [Pré-requisitos](#pré-requisitos)
+    - [Execução da aplicação](Execução-da-aplicação)
     - [Executando a aplicacao](#executando-a-aplicacao)
     - [Configuração para Desenvolvimento Local](#configuração-para-desenvolvimento-local)
         - [Utilizando o docker-compose](#utilizando-o-docker-compose)
@@ -70,7 +71,18 @@ O sistema visa criar uma camada de serviços para gerenciar um sistema de blog, 
     
 6.  Variáveis de ambiente
     
-## Executando a aplicacao
+## Execução da aplicação
+1. Clone o repositório
+```bash
+git clone https://github.com/jefersonlemos/tech-challenge-2.git
+cd tech-challenge-2
+```
+2. Execute o docker-compose
+```bash
+docker-compose up -d
+```
+
+A aplicação estará acessível em http://localhost:3000 e a documentação técnica do Swagger estará disponível em: http://localhost:3000/api-docs.
 
 
 ## Configuração para Desenvolvimento Local
@@ -149,6 +161,8 @@ npm run build
 ```bash
 npm run start
 ```
+
+Nesse modo de execução é necessário que somente o container do MongoDB esteja executando.
 
 ## Uso Básico
 
