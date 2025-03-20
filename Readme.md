@@ -77,7 +77,20 @@ O sistema visa criar uma camada de serviços para gerenciar um sistema de blog, 
 git clone https://github.com/jefersonlemos/tech-challenge-2.git
 cd tech-challenge-2
 ```
-2. Execute o docker-compose
+
+2.  Configure as variáveis de ambiente
+
+Use `mongodb` como MONGO_HOST porque os serviços estão na mesma rede interna do Docker Compose.
+```bash
+export MONGO_INITDB_ROOT_USERNAME=<usuario>  
+export MONGO_INITDB_ROOT_PASSWORD=<senha>
+export MONGO_HOST=mongodb  
+export MONGO_PORT=27017  
+export MONGO_USER=<usuario>  
+export MONGO_PASS=<senha>
+```
+
+3. Execute o docker-compose
 ```bash
 docker-compose up -d
 ```
