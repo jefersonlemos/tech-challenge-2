@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     #TODO - Change the image name to your docker username/image:tag
-    image: jefoso/blog-escola-publica:latest
+    image: techchallenge-dev
     container_name: app-blog-escola-publica
     restart: always
     ports:
