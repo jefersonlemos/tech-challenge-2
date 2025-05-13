@@ -42,6 +42,8 @@
  *   post:
  *     summary: Cria um novo post
  *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -72,6 +74,8 @@
  *           application/json:
  *             schema:
  *              $ref: '#/components/schemas/Post'
+ *       401:
+ *         description: Token ausente ou inválido
  *       500:
  *         description: Erro interno do servidor
  */
@@ -82,6 +86,8 @@
  *   delete:
  *     summary: Deleta um Post
  *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *      - in: path
  *        name: id
@@ -94,6 +100,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Post'
+ *       401:
+ *         description: Token ausente ou inválido
  *       404:
  *         description: Post não encontrado
  *       500:
@@ -106,6 +114,8 @@
  *   put:
  *     summary: Atualiza um post existente
  *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *      - in: path
  *        name: id
@@ -131,12 +141,14 @@
  *                 description: Autor do post
  *                 example: João da Silva
  *     responses:
- *       204:
+ *       200:
  *         description: Sucesso
  *         content:
  *           application/json:
  *             schema:
  *              $ref: '#/components/schemas/Post'
+ *       401:
+ *         description: Token ausente ou inválido
  *       404:
  *         description: Post não encontrado
  *       500:
@@ -192,29 +204,95 @@
 
 /**
  * @swagger
- *components:
- *  schemas:
- *   Post:
- *     type: object
- *     properties:
- *       _id:
- *         type: string
- *         description: ID do post
- *         example: 67a4d111650febdeb677c4af
- *       titulo:
- *         type: string
- *         description: Título do post
- *         example: Dica de Gramática
- *       conteudo:
- *         type: string
- *         description: Conteúdo do post
- *         example: A crase é um acento grave indicativo de crase.
- *       autor:
- *         type: string
- *         description: Autor do post
- *         example: João da Silva
- *       __v:
- *         type: number
- *         description: Versão do documento
- *         example: 0
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID do post
+ *           example: 67a4d111650febdeb677c4af
+ *         titulo:
+ *           type: string
+ *           description: Título do post
+ *           example: Dica de Gramática
+ *         conteudo:
+ *           type: string
+ *           description: Conteúdo do post
+ *           example: A crase é um acento grave indicativo de crase.
+ *         autor:
+ *           type: string
+ *           description: Autor do post
+ *           example: João da Silva
+ */
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Registra um novo usuário
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: usuario@email.com
+ *               password:
+ *                 type: string
+ *                 example: senha123
+ *     responses:
+ *       201:
+ *         description: Usuário criado com sucesso
+ *       400:
+ *         description: Erro de validação
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Realiza login e retorna um token JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: usuario@email.com
+ *               password:
+ *                 type: string
+ *                 example: senha123
+ *     responses:
+ *       200:
+ *         description: Login bem-sucedido, retorna o token JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Credenciais inválidas
  */
