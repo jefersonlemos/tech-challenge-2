@@ -1,5 +1,6 @@
 import express from "express";
 import PostController from "@/controllers/postController";
+import authMiddleware from "../middleware/authMiddleware";
 
 const routes = express.Router();
 
@@ -8,8 +9,8 @@ routes
   .get("/posts/search", PostController.listarPostsPorPalavrasChave)
   .get("/posts/search/:q", PostController.listarPostsPorPalavrasChave)
   .get("/posts/:id", PostController.listarPostPorId)
-  .post("/posts", PostController.cadastrarPost)
-  .put("/posts/:id", PostController.atualizarPost)
-  .delete("/posts/:id", PostController.excluirPost);
+  .post("/posts", authMiddleware, PostController.cadastrarPost)
+  .put("/posts/:id", authMiddleware, PostController.atualizarPost)
+  .delete("/posts/:id", authMiddleware, PostController.excluirPost);
 
 export default routes;
