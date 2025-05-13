@@ -10,10 +10,24 @@ let mongoServer: MongoMemoryServer;
 const app = express();
 routes(app);
 
+let token: string;
+let idResposta: string;
+
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);
+
+  // Cria usuário de teste e obtém token JWT
+  await request(app)
+    .post("/register")
+    .send({ email: "test@example.com", password: "senha123" });
+
+  const loginRes = await request(app)
+    .post("/login")
+    .send({ email: "test@example.com", password: "senha123" });
+
+  token = loginRes.body.token;
 });
 
 afterAll(async () => {
@@ -50,11 +64,11 @@ describe("GET em /posts", () => {
   });
 });
 
-let idResposta: string;
 describe("POST em /posts", () => {
   it("Deve adicionar um novo post", async () => {
     const resposta = await request(app)
       .post("/posts")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         titulo: "Teste",
         conteudo: "Conteudo do post de teste",
@@ -72,6 +86,7 @@ describe("POST em /posts", () => {
   it("Deve não adicionar nada ao passar o body vazio", async () => {
     await request(app)
       .post("/posts")
+      .set("Authorization", `Bearer ${token}`)
       .send({})
       .expect(500);
   });
@@ -95,6 +110,7 @@ describe("PUT em /posts/id", () => {
     const spy = jest.spyOn(requisicao, "request");
     await requisicao.request(app)
       .put(`/posts/${idResposta}`)
+      .set("Authorization", `Bearer ${token}`)
       .send(param)
       .expect(200);
 
@@ -122,6 +138,7 @@ describe("DELETE em /posts/id", () => {
   it("Deletar o post adicionado", async () => {
     await request(app)
       .delete(`/posts/${idResposta}`)
+      .set("Authorization", `Bearer ${token}`)
       .expect(200);
   });
 });
