@@ -1,4 +1,3 @@
-// filepath: /c:/Users/Eve/Documents/GITHUB/fiap/tech-challenge-2/src/controllers/__tests__/postController.test.ts
 import request from "supertest";
 import express from "express";
 import mongoose from "mongoose";
@@ -6,14 +5,14 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import PostController from "../../src/controllers/postController";
 import Post from "../../src/models/Post";
 import authMiddleware from "../../src/middleware/authMiddleware";
-import UserController from "../../src/controllers/userController"; // Adjust path as needed
+import UserController from "../../src/controllers/userController";
 import User from "../../src/models/User";
 
 const app = express();
 app.use(express.json());
 
-app.post("/register", UserController.register); // Adjust to your actual register controller
-app.post("/login", UserController.login); // Adjust to your actual login controller
+app.post("/register", UserController.register);
+app.post("/login", UserController.login);
 
 app.get("/posts", PostController.listarPosts);
 app.get("/posts/search", PostController.listarPostsPorPalavrasChave);
@@ -58,12 +57,11 @@ beforeEach(async () => {
     })
     .expect(200);
 
-  authToken = loginResponse.body.token; // Adjust based on your login response structure
+  authToken = loginResponse.body.token;
 });
 
 afterEach(async () => {
   await Post.deleteMany({});
-  // Clear users if needed
   await User.deleteMany({});
 });
 
