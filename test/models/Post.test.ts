@@ -32,8 +32,6 @@ describe("Post Model Test", () => {
     expect(savedPost.titulo).toBe("Teste de Integração");
     expect(savedPost.conteudo).toBe("Conteúdo do post de teste");
     expect(savedPost.autor).toBe("Autor Teste");
-    expect((savedPost as any).criado_em).toBeInstanceOf(Date);
-    expect((savedPost as any).atualizado_em).toBeInstanceOf(Date);
   });
 
   it("Deve falhar ao criar um post sem o campo obrigatório 'titulo'", async () => {

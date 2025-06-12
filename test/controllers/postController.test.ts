@@ -22,7 +22,10 @@ app.put("/posts/:id", authMiddleware, PostController.atualizarPost);
 app.delete("/posts/:id", authMiddleware, PostController.excluirPost);
 
 let mongoServer: MongoMemoryServer;
-let authToken: string; // Store the token for authenticated tests
+
+// Store the token for authenticated tests
+let authTokenTeacher: string;
+let authTokenStudent: string;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -36,28 +39,39 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  // Create a test user and get token before each test
-  const testUser = {
-    email: "test@test.com",
-    password: "testpassword123"
+  // Clear data first
+  await User.deleteMany({});
+  await Post.deleteMany({});
+
+  const testUserTeacher = {
+    email: "teacher@test.com",  // Different emails
+    password: "testpassword123",
+    role: "teacher" as const,
   };
 
-  // Register user
-  await request(app)
-    .post("/register")
-    .send(testUser)
-    .expect(201);
+  const testUserStudent = {
+    email: "student@test.com",  // Different emails
+    password: "testpassword123",
+    role: "student" as const,
+  };
 
-  // Login and get token
-  const loginResponse = await request(app)
+  // Register both users
+  await request(app).post("/register").send(testUserTeacher).expect(201);
+  await request(app).post("/register").send(testUserStudent).expect(201);
+
+  // Get tokens
+  const teacherLogin = await request(app)
     .post("/login")
-    .send({
-      email: testUser.email,
-      password: testUser.password
-    })
+    .send({ email: testUserTeacher.email, password: testUserTeacher.password, role: "teacher" })
     .expect(200);
 
-  authToken = loginResponse.body.token;
+  const studentLogin = await request(app)
+    .post("/login")
+    .send({ email: testUserStudent.email, password: testUserStudent.password, role: "student" })
+    .expect(200);
+
+  authTokenTeacher = teacherLogin.body.token;
+  authTokenStudent = studentLogin.body.token;
 });
 
 afterEach(async () => {
@@ -96,7 +110,7 @@ describe("PostController - Testes de sucesso", () => {
     const novoPost = { titulo: "Novo Post", conteudo: "Conteúdo do novo post", autor: "Novo Autor" };
     const resposta = await request(app)
       .post("/posts")
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(novoPost)
       .expect(201);
 
@@ -110,7 +124,7 @@ describe("PostController - Testes de sucesso", () => {
     const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
     await request(app)
       .put(`/posts/${post._id}`)
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(atualizadoPost)
       .expect(200);
 
@@ -124,7 +138,7 @@ describe("PostController - Testes de sucesso", () => {
 
     await request(app)
       .delete(`/posts/${post._id}`)
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .expect(200);
 
     const resposta = await Post.findById(post._id);
@@ -160,7 +174,7 @@ describe("PostController - Testes de falha", () => {
     const novoPost = { titulo: "", conteudo: "", autor: "" };
     const resposta = await request(app)
       .post("/posts")
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(novoPost)
       .expect(500);
     expect(resposta.body.message).toBe("Falha ao cadastrar novo post.");
@@ -186,21 +200,11 @@ describe("PostController - Testes de falha", () => {
       .expect(401); // Unauthorized
   });
 
-  it("Não deve criar um novo post com dados inválidos", async () => {
-    const novoPost = { titulo: "", conteudo: "", autor: "" };
-    const resposta = await request(app)
-      .post("/posts")
-      .set("Authorization", `Bearer ${authToken}`)
-      .send(novoPost)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha ao cadastrar novo post.");
-  });
-
   it("Não deve atualizar um post com ID inválido", async () => {
     const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
     const resposta = await request(app)
       .put("/posts/invalidID")
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(atualizadoPost)
       .expect(500);
     expect(resposta.body.message).toBe("Falha na atualização do post.");
@@ -209,8 +213,38 @@ describe("PostController - Testes de falha", () => {
   it("Não deve excluir um post com ID inválido", async () => {
     const resposta = await request(app)
       .delete("/posts/invalidID")
-      .set("Authorization", `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
       .expect(500);
     expect(resposta.body.message).toBe("Falha na exclusão do post.");
+  });
+
+  it("Não deve criar um post com role student", async () => {
+    const novoPost = { titulo: "Novo Post", conteudo: "Conteúdo do novo post", autor: "Novo Autor" };
+    await request(app)
+      .post("/posts")
+      .set("Authorization", `Bearer ${authTokenStudent}`)
+      .send(novoPost)
+      .expect(403); // Forbidden
+  });
+
+  it("Não deve atualizar um post com role student", async () => {
+    const post = new Post({ titulo: "Post 1", conteudo: "Conteúdo 1", autor: "Autor 1" });
+    await post.save();
+
+    const atualizadoPost = { titulo: "Post Atualizado", conteudo: "Conteúdo Atualizado", autor: "Autor Atualizado" };
+    await request(app)
+      .put(`/posts/${post._id}`)
+      .set("Authorization", `Bearer ${authTokenStudent}`)
+      .send(atualizadoPost)
+      .expect(403); // Forbidden
+  });
+  it("Não deve excluir um post com role student", async () => {
+    const post = new Post({ titulo: "Post 1", conteudo: "Conteúdo 1", autor: "Autor 1" });
+    await post.save();
+
+    await request(app)
+      .delete(`/posts/${post._id}`)
+      .set("Authorization", `Bearer ${authTokenStudent}`)
+      .expect(403); // Forbidden
   });
 });

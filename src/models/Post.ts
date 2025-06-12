@@ -12,7 +12,7 @@ const postSchema = new mongoose.Schema(
       createdAt: "criado_em",
       updatedAt: "atualizado_em",
     },
-  versionKey: false,
+    versionKey: false,
   },
 );
 
