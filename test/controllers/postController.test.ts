@@ -14,9 +14,9 @@ app.use(express.json());
 app.post("/register", UserController.register);
 app.post("/login", UserController.login);
 
-app.get("/posts", PostController.listarPosts);
-app.get("/posts/search", PostController.listarPostsPorPalavrasChave);
-app.get("/posts/:id", PostController.listarPostPorId);
+app.get("/posts", authMiddleware, PostController.listarPosts);
+app.get("/posts/search", authMiddleware, PostController.listarPostsPorPalavrasChave);
+app.get("/posts/:id", authMiddleware, PostController.listarPostPorId);
 app.post("/posts", authMiddleware, PostController.cadastrarPost);
 app.put("/posts/:id", authMiddleware, PostController.atualizarPost);
 app.delete("/posts/:id", authMiddleware, PostController.excluirPost);

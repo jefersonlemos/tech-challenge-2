@@ -13,7 +13,7 @@
  *              $ref: '#/components/schemas/Post'
  *       500:
  *         description: Erro interno do servidor
- * 
+ *
  * /posts/{id}:
  *   get:
  *     summary: Leitura de Post
