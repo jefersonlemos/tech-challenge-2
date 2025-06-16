@@ -6,6 +6,11 @@ class PostController {
   static async listarPosts(req: Request, res: Response): Promise<void> {
     try {
       const listaPosts = await Post.find({});
+      if (!listaPosts || listaPosts.length === 0) {
+        res.status(404).json({ message: "Nenhum post encontrado." });
+        return;
+      }
+
       res.status(200).json(listaPosts);
     } catch (erro) {
       if (erro instanceof Error) {
@@ -39,6 +44,11 @@ class PostController {
         $or: [{ titulo: new RegExp(palavrasChave, "i") }, { conteudo: new RegExp(palavrasChave, "i") }, { autor: new RegExp(palavrasChave, "i") }],
       });
 
+      if (posts.length === 0) {
+        res.status(404).json({ message: "Nenhum post encontrado com as palavras-chave fornecidas." });
+        return;
+      }
+
       res.status(200).json(posts);
     } catch (erro) {
       if (erro instanceof Error) {
@@ -50,6 +60,10 @@ class PostController {
   static async cadastrarPost(req: Request, res: Response): Promise<void> {
     const novoPost = req.body;
     try {
+      if (req.user?.role !== "teacher") {
+        res.status(403).json({ message: "Acesso negado. Apenas professores podem criar posts." });
+        return;
+      }
       const postCompleto = { ...novoPost };
       const postCriado = await Post.create(postCompleto);
       res.status(201).json({ message: "Post criado com sucesso!", post: postCriado });
@@ -62,6 +76,10 @@ class PostController {
 
   static async atualizarPost(req: Request, res: Response): Promise<void> {
     try {
+      if (req.user?.role !== "teacher") {
+        res.status(403).json({ message: "Acesso negado. Apenas professores podem atualizar posts." });
+        return;
+      }
       const id = req.params.id;
       const postEditado = await Post.findByIdAndUpdate(id, req.body, { new: true });
 
@@ -80,6 +98,10 @@ class PostController {
 
   static async excluirPost(req: Request, res: Response): Promise<void> {
     try {
+      if (req.user?.role !== "teacher") {
+        res.status(403).json({ message: "Acesso negado. Apenas professores podem excluir posts." });
+        return;
+      }
       const id = req.params.id;
       const postEncontrado = await Post.findById(id);
 

@@ -7,6 +7,7 @@ declare module "express-serve-static-core" {
     user?: {
       id: string;
       email: string;
+      role: string;
     };
   }
 }
@@ -23,7 +24,7 @@ export default function authMiddleware(req: Request, res: Response, next: NextFu
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; email: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; email: string; role: string };
     req.user = decoded;
     next();
   } catch {

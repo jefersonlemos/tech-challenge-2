@@ -12,9 +12,9 @@ app.use(express.json());
 app.post("/register", UserController.register);
 app.post("/login", UserController.login);
 
-app.get("/users", UserController.listarUsers);
-app.get("/users/search", UserController.listarUsersPorPalavrasChave);
-app.get("/users/:id", UserController.listarUserPorId);
+app.get("/users", authMiddleware, UserController.listarUsers);
+app.get("/users/search", authMiddleware, UserController.listarUsersPorPalavrasChave);
+app.get("/users/:id", authMiddleware, UserController.listarUsersPorId);
 app.post("/users", authMiddleware, UserController.cadastrarUser);
 app.put("/users/:id", authMiddleware, UserController.atualizarUser);
 app.delete("/users/:id", authMiddleware, UserController.excluirUser);
@@ -24,6 +24,8 @@ let mongoServer: MongoMemoryServer;
 // Store the token for authenticated tests
 let authTokenTeacher: string;
 let authTokenStudent: string;
+
+let studentResponse: request.Response = {} as request.Response;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -54,7 +56,7 @@ beforeEach(async () => {
 
   // Register both users
   await request(app).post("/register").send(testUserTeacher).expect(201);
-  await request(app).post("/register").send(testUserStudent).expect(201);
+  studentResponse = await request(app).post("/register").send(testUserStudent).expect(201);
 
   // Get tokens
   const teacherLogin = await request(app)
@@ -71,120 +73,143 @@ beforeEach(async () => {
   authTokenStudent = studentLogin.body.token;
 });
 
+afterEach(async () => {
+  await User.deleteMany({});
+});
+
 // Add helper function
 const createTestUser = (email: string, role: "teacher" | "student" = "teacher") => {
   return new User({ role, email, password: "senha123" });
 };
 
-afterEach(async () => {
-  await User.deleteMany({});
-});
-
 describe("UserController - Testes de sucesso", () => {
-  it("Deve listar todos os users", async () => {
+  it("Deve listar todos os users apenas para o professor", async () => {
     const user = await createTestUser("user1@test.com").save();
-    const resposta = await request(app).get("/users").expect(200);
-    expect(resposta.body.length).toBe(1);
-    expect(resposta.body[0].email).toBe(user.email);
+    const resposta = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(200);
+    expect(resposta.body.length).toBe(3);
+    expect(resposta.body[2].email).toBe(user.email);
   });
 
   it("Deve listar um user por ID", async () => {
     const user = await createTestUser("user2@test.com").save();
-    const resposta = await request(app).get(`/users/${user._id}`).expect(200);
-    expect(resposta.body.email).toBe("user2@test.com");
+    const resposta = await request(app)
+      .get(`/users/${user._id}`)
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(200);
+    expect(resposta.body.email).toBe(user.email);
   });
 
   it("Deve buscar users por palavras-chave", async () => {
     const user = await createTestUser("user4@test.com").save();
-    const resposta = await request(app).get("/users/search").expect(200);
+    const resposta = await request(app)
+      .get("/users/search?q=user4")
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(200);
     expect(resposta.body.length).toBe(1);
     expect(resposta.body[0].email).toBe(user.email);
   });
 
   it("Deve criar um novo user", async () => {
-    const user = await createTestUser("user5@test.com").save();
+    const user = { role: "teacher", email: "user5@test.com", password: "senha123" };
     const resposta = await request(app)
       .post("/users")
       .set("Authorization", `Bearer ${authTokenTeacher}`)
-      .send(user)
-      .expect(201);
-
-    expect(resposta.body.email).toBe(user.email);
+      .send(user);
+    expect(resposta.status).toBe(201);
+    expect(resposta.body.userCriado.email).toBe(user.email);
+    expect(resposta.body.message).toBe("Usuário criado com sucesso!");
   });
 
   it("Deve atualizar um user", async () => {
     const user = await createTestUser("user6@test.com").save();
     const atualizadoUser = { role: "student", email: "user6@test.com", password: "senha123" };
-    await request(app)
+    const resposta = await request(app)
       .put(`/users/${user._id}`)
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(atualizadoUser)
       .expect(200);
 
-    const resposta = await User.findById(user._id);
-    expect(resposta?.role).toBe("student");
+    const respostaAgain = await User.findById(user._id);
+    expect(respostaAgain?.role).toBe("student");
+    expect(resposta.body.message).toBe("Usuário atualizado com sucesso!");
   });
 
   it("Deve excluir um user", async () => {
     const user = await createTestUser("user7@test.com").save();
 
-    await request(app)
+    const resposta = await request(app)
       .delete(`/users/${user._id}`)
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .expect(200);
 
-    const resposta = await User.findById(user._id);
-    expect(resposta).toBeNull();
+    const respostaAgain = await User.findById(user._id);
+    expect(respostaAgain).toBeNull();
+    expect(resposta.body.message).toBe("Usuário excluído com sucesso!");
   });
 
   it("Deve listar o próprio user autenticado", async () => {
-    const user = await createTestUser("user7A@test.com").save();
     const resposta = await request(app)
-      .get(`/users/${user._id}`)
-      .set("Authorization", `Bearer ${authTokenStudent}`)
-      .expect(200);
-    expect(resposta.body.email).toBe(user.email);
+      .get(`/users/${studentResponse.body.user._id}`)
+      .set("Authorization", `Bearer ${authTokenStudent}`);
+    expect(resposta.status).toBe(200);
+    expect(resposta.body.email).toBe(studentResponse.body.user.email);
   });
 });
 
 describe("UserController - Testes de falha", () => {
   it("Não deve listar users quando não há users", async () => {
-    const resposta = await request(app).get("/users").expect(200);
-    expect(resposta.body.length).toBe(0);
+    await User.deleteMany({});
+    const resposta = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(404);
+    expect(resposta.body.message).toBe("Nenhum usuário encontrado.");
   });
 
   it("Não deve listar um user com ID inválido", async () => {
-    const resposta = await request(app).get("/users/invalidID").expect(404);
-    expect(resposta.body.message).toBe("Falha na requisição do user.");
+    const resposta = await request(app)
+      .get("/users/123456789012345678901234")
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(404);
+    expect(resposta.body.message).toBe("Usuário não encontrado.");
   });
 
   it("Não deve buscar users por palavras-chave inexistentes", async () => {
-    const resposta = await request(app).get("/users/search?keywords=nonexistent").expect(200);
-    expect(resposta.body.length).toBe(0);
+    const resposta = await request(app)
+      .get("/users/search?q=nonexistent")
+      .set("Authorization", `Bearer ${authTokenTeacher}`)
+      .expect(404);
+    expect(resposta.body.message).toBe("Nenhum usuário encontrado com as palavras-chave fornecidas.");
   });
 
   it("Não deve criar um novo user sem autenticação", async () => {
-    const novoUser = await createTestUser("user8@test.com").save();
-    await request(app)
+    const novoUser = { role: "teacher", email: "user5@test.com", password: "senha123" };
+    const resposta = await request(app)
       .post("/users")
       .send(novoUser)
       .expect(401); // Unauthorized
+    expect(resposta.body.message).toBe("Token ausente");
   });
 
   it("Não deve atualizar um user sem autenticação", async () => {
     const user = await createTestUser("user9@test.com").save();
     const atualizadoUser = { role: "teacher", email: "user9@test.com", password: "novaSenha123" };
-    await request(app)
+    const resposta = await request(app)
       .put(`/users/${user._id}`)
       .send(atualizadoUser)
       .expect(401); // Unauthorized
+    expect(resposta.body.message).toBe("Token ausente");
   });
 
   it("Não deve excluir um user sem autenticação", async () => {
     const user = await createTestUser("user10@test.com").save();
-    await request(app)
+    const resposta = await request(app)
       .delete(`/users/${user._id}`)
       .expect(401); // Unauthorized
+    expect(resposta.body.message).toBe("Token ausente");
   });
 
   it("Não deve criar um novo user com dados inválidos", async () => {
@@ -194,25 +219,25 @@ describe("UserController - Testes de falha", () => {
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(novoUser)
       .expect(500);
-    expect(resposta.body.message).toBe("Falha ao cadastrar novo user.");
+    expect(resposta.body.message).toBe("Falha ao cadastrar novo usuário.");
   });
 
   it("Não deve atualizar um user com ID inválido", async () => {
     const atualizadoUser = { role: "teacher", email: "user11@test.com", password: "novaSenha123" };
     const resposta = await request(app)
-      .put("/users/invalidID")
+      .put("/users/123456789012345678901234")
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(atualizadoUser)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha na atualização do user.");
+      .expect(404);
+    expect(resposta.body.message).toBe("Usuário não encontrado");
   });
 
   it("Não deve excluir um user com ID inválido", async () => {
     const resposta = await request(app)
-      .delete("/users/invalidID")
+      .delete("/users/123456789012345678901234")
       .set("Authorization", `Bearer ${authTokenTeacher}`)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha na exclusão do user.");
+      .expect(404);
+    expect(resposta.body.message).toBe("Usuário não encontrado");
   });
 
   it("Não deve criar um novo user com email já existente", async () => {
@@ -223,7 +248,7 @@ describe("UserController - Testes de falha", () => {
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(novoUser)
       .expect(500);
-    expect(resposta.body.message).toBe("Falha ao cadastrar novo user.");
+    expect(resposta.body.message).toBe("Falha ao cadastrar novo usuário.");
   });
 
   it("Não deve atualizar um user com email já existente", async () => {
@@ -235,7 +260,7 @@ describe("UserController - Testes de falha", () => {
       .set("Authorization", `Bearer ${authTokenTeacher}`)
       .send(atualizadoUser)
       .expect(500);
-    expect(resposta.body.message).toBe("Falha ao atualizar user.");
+    expect(resposta.body.message).toBe("Falha ao atualizar usuário");
   });
 
   it("Não deve criar um novo user com role student", async () => {
@@ -244,19 +269,19 @@ describe("UserController - Testes de falha", () => {
       .post("/users")
       .set("Authorization", `Bearer ${authTokenStudent}`)
       .send(novoUser)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha ao cadastrar novo user.");
+      .expect(403);
+    expect(resposta.body.message).toBe("Acesso negado. Apenas professores podem criar usuários.");
   });
 
-  it("Não deve atualizar um user com role student", async () => {
+  it("Não deve atualizar um usuário com role student", async () => {
     const user = await createTestUser("user15@test.com").save();
     const atualizadoUser = { role: "student", email: "user15@test.com", password: "novaSenha123" };
     const resposta = await request(app)
       .put(`/users/${user._id}`)
       .set("Authorization", `Bearer ${authTokenStudent}`)
       .send(atualizadoUser)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha ao atualizar user.");
+      .expect(403);
+    expect(resposta.body.message).toBe("Acesso negado. Apenas professores podem atualizar usuários.");
   });
 
   it("Não deve excluir um user com role student", async () => {
@@ -264,8 +289,8 @@ describe("UserController - Testes de falha", () => {
     const resposta = await request(app)
       .delete(`/users/${user._id}`)
       .set("Authorization", `Bearer ${authTokenStudent}`)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha ao excluir user.");
+      .expect(403);
+    expect(resposta.body.message).toBe("Acesso negado. Apenas professores podem excluir usuários.");
   });
 
   it("Não deve listar users com role student", async () => {
@@ -273,7 +298,16 @@ describe("UserController - Testes de falha", () => {
     const resposta = await request(app)
       .get("/users")
       .set("Authorization", `Bearer ${authTokenStudent}`)
-      .expect(500);
-    expect(resposta.body.message).toBe("Falha ao listar users.");
+      .expect(403);
+    expect(resposta.body.message).toBe("Acesso negado. Apenas professores podem acessar usuários.");
+  });
+
+  it("Não deve listar user com role student, se não for o próprio", async () => {
+    const user = await createTestUser("user17@test.com").save();
+    const resposta = await request(app)
+      .get(`/users/${user._id}`)
+      .set("Authorization", `Bearer ${authTokenStudent}`)
+      .expect(403);
+    expect(resposta.body.message).toBe("Acesso negado. Apenas professores podem acessar usuários.");
   });
 });

@@ -133,3 +133,4 @@ package-lock.json
 
 .env
 CLAUDE.md
+launch.json
