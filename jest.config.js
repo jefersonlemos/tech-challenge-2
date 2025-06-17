@@ -1,5 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-export default {
+module.exports = {
   preset: "ts-jest/presets/js-with-ts",
   testEnvironment: "node",
   detectOpenHandles: true,
