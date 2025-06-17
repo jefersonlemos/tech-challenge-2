@@ -1,7 +1,7 @@
 import express, { Express, Response } from "express";
-import posts from "./postsRoutes";
-import users from "./usersRoutes";
-import auth from "./auth";
+import posts from "./postsRoutes.js";
+import users from "./usersRoutes.js";
+import auth from "./auth.js";
 import cors from "cors";
 
 const routes = (app: Express) => {
