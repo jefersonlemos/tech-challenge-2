@@ -30,7 +30,14 @@ class UserController {
       expiresIn: "24h",
     });
 
-    res.json({ token });
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
   }
 
   static async listarUsers(req: Request, res: Response): Promise<void> {
