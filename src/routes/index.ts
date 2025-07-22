@@ -1,6 +1,7 @@
 import express, { Express, Response } from "express";
-import posts from "./postsRoutes";
-import auth from "./auth";
+import posts from "./postsRoutes.js";
+import users from "./usersRoutes.js";
+import auth from "./auth.js";
 import cors from "cors";
 
 const routes = (app: Express) => {
@@ -10,6 +11,7 @@ const routes = (app: Express) => {
 
   app.use(cors());
   app.use(express.json(), posts);
+  app.use(express.json(), users);
   app.use(express.json(), auth);
 };
 

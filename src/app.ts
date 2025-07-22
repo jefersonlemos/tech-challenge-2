@@ -1,6 +1,8 @@
+import seedAdminUser from "./models/seedAdminUser";
+import seedInitialPosts from "./models/seedInitialPosts.js"; 
 import express from "express";
-import conectaNaDatabase from "@/config/dbConnect";
-import routes from "@/routes/index";
+import conectaNaDatabase from "@/config/dbConnect.js";
+import routes from "@/routes/index.js";
 import swaggerSetup from "./swagger.js";
 
 const app = express();
@@ -17,8 +19,12 @@ async function startServer() {
     console.error("erro de conexao", erro);
   });
 
-  conexao.once("open", () => {
+  conexao.once("open", async () => {
     console.log("Conexão com o banco feita com sucesso");
+    await seedAdminUser();
+    console.log("Usuário admin seed executado");
+    await seedInitialPosts();
+    console.log("Posts iniciais seed executados");
   });
 
   swaggerSetup(app);

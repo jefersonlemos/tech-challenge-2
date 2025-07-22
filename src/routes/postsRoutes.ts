@@ -1,14 +1,14 @@
 import express from "express";
-import PostController from "@/controllers/postController";
-import authMiddleware from "../middleware/authMiddleware";
+import PostController from "@/controllers/postController.js";
+import authMiddleware from "@/middleware/authMiddleware.js";
 
 const routes = express.Router();
 
 routes
-  .get("/posts", PostController.listarPosts)
-  .get("/posts/search", PostController.listarPostsPorPalavrasChave)
-  .get("/posts/search/:q", PostController.listarPostsPorPalavrasChave)
-  .get("/posts/:id", PostController.listarPostPorId)
+  .get("/posts", authMiddleware, PostController.listarPosts)
+  .get("/posts/search", authMiddleware, PostController.listarPostsPorPalavrasChave)
+  .get("/posts/search/:q", authMiddleware, PostController.listarPostsPorPalavrasChave)
+  .get("/posts/:id", authMiddleware, PostController.listarPostPorId)
   .post("/posts", authMiddleware, PostController.cadastrarPost)
   .put("/posts/:id", authMiddleware, PostController.atualizarPost)
   .delete("/posts/:id", authMiddleware, PostController.excluirPost);
